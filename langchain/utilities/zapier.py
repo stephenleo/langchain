@@ -59,7 +59,7 @@ class ZapierNLAWrapper(BaseModel):
     def _get_action_request(
         self, action_id: str, instructions: str, params: Optional[Dict] = None
     ) -> Request:
-        data = params if params else {}
+        data = params or {}
         data.update(
             {
                 "instructions": instructions,
@@ -67,7 +67,7 @@ class ZapierNLAWrapper(BaseModel):
         )
         return Request(
             "POST",
-            self.zapier_nla_api_base + f"exposed/{action_id}/execute/",
+            f"{self.zapier_nla_api_base}exposed/{action_id}/execute/",
             json=data,
         )
 
@@ -101,7 +101,7 @@ class ZapierNLAWrapper(BaseModel):
         https://nla.zapier.com/api/v1/dynamic/docs)
         """
         session = self._get_session()
-        response = session.get(self.zapier_nla_api_dynamic_base + "exposed/")
+        response = session.get(f"{self.zapier_nla_api_dynamic_base}exposed/")
         response.raise_for_status()
         return response.json()["results"]
 
@@ -129,7 +129,7 @@ class ZapierNLAWrapper(BaseModel):
         instead return a preview of params that have been guessed by the AI in
         case you need to explicitly review before executing."""
         session = self._get_session()
-        params = params if params else {}
+        params = params or {}
         params.update({"preview_only": True})
         request = self._get_action_request(action_id, instructions, params)
         response = session.send(session.prepare_request(request))
