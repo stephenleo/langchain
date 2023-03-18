@@ -13,11 +13,10 @@ class PydanticOutputParser(BaseOutputParser):
 
     def parse(self, text: str) -> BaseModel:
         try:
-            # Greedy search for 1st json candidate.
-            match = re.search("\{.*\}", text.strip())
-            json_str = ""
-            if match:
+            if match := re.search("\{.*\}", text.strip()):
                 json_str = match.group()
+            else:
+                json_str = ""
             json_object = json.loads(json_str)
             return self.pydantic_object.parse_obj(json_object)
 

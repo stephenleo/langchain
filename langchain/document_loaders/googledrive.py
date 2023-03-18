@@ -102,7 +102,7 @@ class GoogleDriveLoader(BaseLoader, BaseModel):
         fh = BytesIO()
         downloader = MediaIoBaseDownload(fh, request)
         done = False
-        while done is False:
+        while not done:
             status, done = downloader.next_chunk()
         text = fh.getvalue().decode("utf-8")
         metadata = {"source": f"https://docs.google.com/document/d/{id}/edit"}
@@ -131,9 +131,6 @@ class GoogleDriveLoader(BaseLoader, BaseModel):
                 returns.append(self._load_document_from_id(item["id"]))
             elif item["mimeType"] == "application/pdf":
                 returns.extend(self._load_file_from_id(item["id"]))
-            else:
-                pass
-
         return returns
 
     def _load_documents_from_ids(self) -> List[Document]:
@@ -157,7 +154,7 @@ class GoogleDriveLoader(BaseLoader, BaseModel):
         fh = BytesIO()
         downloader = MediaIoBaseDownload(fh, request)
         done = False
-        while done is False:
+        while not done:
             status, done = downloader.next_chunk()
         content = fh.getvalue()
 
